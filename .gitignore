@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Firebase credentials
+firebase-credentials.json
+
+# Google Cloud credentials
+google-credentials.json
+
+# Other
+*.log
