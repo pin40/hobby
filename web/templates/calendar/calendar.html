@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Google Calendar Overview{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Google Calendar</h2>
+    <p class="lead">View upcoming events and add new ones.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if error_message %}
+        <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Add New Event</h4>
+            <form method="POST" action="{{ url_for('calendar_bp.calendar_page') }}">
+                <div class="form-group">
+                    <label for="summary">Event Summary</label>
+                    <input type="text" class="form-control bg-dark text-light" id="summary" name="summary" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" class="form-control bg-dark text-light" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">Time (UTC)</label>
+                    <input type="time" class="form-control bg-dark text-light" id="time" name="time" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (minutes)</label>
+                    <input type="number" class="form-control bg-dark text-light" id="duration" name="duration" min="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Event</button>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Upcoming Events</h4>
+            {% if events_data and 'No upcoming events found.' not in events_data and 'Error:' not in events_data %}
+                <div class="card text-white bg-dark">
+                    <div class="card-body">
+                        <pre>{{ events_data }}</pre> {# Raw string output from service #}
+                    </div>
+                </div>
+            {% elif events_data %} {# Handles "No upcoming events" message from service #}
+                <p>{{ events_data }}</p>
+            {% else %}
+                <p>No upcoming events to display or error loading them.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}AI Assistant{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>AI Assistant (Gemini)</h2>
+    <p class="lead">Chat with the AI and manage its configuration for your session.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <!-- Chat Area -->
+        <div class="col-md-8">
+            <h4>Chat</h4>
+            <div class="chat-window mb-3 p-3 bg-secondary" style="height: 400px; overflow-y: scroll; border: 1px solid #444;">
+                {% if chat_history %}
+                    {% for item in chat_history %}
+                        <p><strong>You:</strong> {{ item.user }}</p>
+                        <p class="text-info"><strong>AI:</strong> <span style="white-space: pre-wrap;">{{ item.ai }}</span></p>
+                        <hr class="border-light">
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Chat history is empty. Start by sending a message.</p>
+                {% endif %}
+            </div>
+            <form method="POST" action="{{ url_for('ai_bp.ai_assistant_page') }}">
+                <input type="hidden" name="action" value="send_message">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control bg-dark text-light" name="prompt" placeholder="Ask the AI something..." required>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Send</button>
+                    </div>
+                </div>
+            </form>
+            <form method="POST" action="{{ url_for('ai_bp.clear_chat') }}" class="text-right">
+                 <button type="submit" class="btn btn-sm btn-outline-warning">Clear Chat History</button>
+            </form>
+        </div>
+
+        <!-- Configuration Area -->
+        <div class="col-md-4">
+            <h4>Session AI Configuration</h4>
+            <p><small class="text-muted">Overrides .env settings for your current session only.</small></p>
+            <form method="POST" action="{{ url_for('ai_bp.ai_assistant_page') }}">
+                <input type="hidden" name="action" value="update_config">
+                <div class="form-group">
+                    <label for="api_key">Gemini API Key</label>
+                    <input type="password" class="form-control bg-dark text-light" id="api_key" name="api_key" value="{{ ai_config.api_key }}">
+                </div>
+                <div class="form-group">
+                    <label for="base_url">Base URL (Optional)</label>
+                    <input type="text" class="form-control bg-dark text-light" id="base_url" name="base_url" value="{{ ai_config.base_url }}" placeholder="e.g., https://generativelanguage.googleapis.com/v1beta/models">
+                </div>
+                <div class="form-group">
+                    <label for="model">Model (Optional)</label>
+                    <input type="text" class="form-control bg-dark text-light" id="model" name="model" value="{{ ai_config.model }}" placeholder="e.g., gemini-pro">
+                </div>
+                <button type="submit" class="btn btn-info">Update Session Config</button>
+            </form>
+            <p class="mt-3"><small class="text-muted">Default settings are loaded from the server's .env file if session values are empty.</small></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

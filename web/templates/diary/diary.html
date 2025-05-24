@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Personal Diary - User {{ user_id or 'N/A' }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Diary Entries for User: {{ user_id or 'N/A' }}</h2>
+    <p class="lead">Your recent thoughts and entries.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if error %}
+        <div class="alert alert-danger">
+            Could not load diary entries. {{ error_message if error_message }}
+        </div>
+    {% else %}
+        {% if entries %}
+            {% for entry in entries %}
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">
+                    Entry from: {{ entry.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC') if entry.timestamp else 'Unknown date' }}
+                </div>
+                <div class="card-body">
+                    <p class="card-text" style="white-space: pre-wrap;">{{ entry.text }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No diary entries found for this user.</p>
+        {% endif %}
+    {% endif %} {# End of if not error block #}
+</div>
+{% endblock %}

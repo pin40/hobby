@@ -1,0 +1,9 @@
+python-telegram-bot
+firebase-admin
+pandas
+openpyxl
+google-api-python-client
+oauth2client
+Flask
+python-dotenv
+requests

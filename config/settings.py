@@ -18,6 +18,8 @@ TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 
 # Firebase Configuration
 FIREBASE_CREDENTIALS_PATH = os.getenv('FIREBASE_CREDENTIALS_PATH')
+if not FIREBASE_CREDENTIALS_PATH:
+    print("Warning: FIREBASE_CREDENTIALS_PATH is not set. This is required for Firebase Admin SDK.")
 # Or individual Firebase variables if preferred:
 FIREBASE_API_KEY = os.getenv('FIREBASE_API_KEY')
 FIREBASE_AUTH_DOMAIN = os.getenv('FIREBASE_AUTH_DOMAIN')
@@ -38,6 +40,8 @@ GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-pro') # Default model if not se
 # Flask Configuration
 FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY', 'a_very_secret_key_in_case_env_is_missing')
 FLASK_DEBUG = os.getenv('FLASK_DEBUG', 'True').lower() == 'true'
+FLASK_HOST = os.getenv('FLASK_HOST', '127.0.0.1')
+FLASK_PORT = int(os.getenv('FLASK_PORT', '5001'))
 
 # Example of how to use these settings:
 if __name__ == '__main__':
@@ -46,3 +50,5 @@ if __name__ == '__main__':
     print(f"Google Credentials Path: {GOOGLE_CREDENTIALS_PATH}")
     print(f"Gemini API Key: {GEMINI_API_KEY[:10]}..." if GEMINI_API_KEY else "Not Set")
     print(f"Flask Debug Mode: {FLASK_DEBUG}")
+    print(f"Flask Host: {FLASK_HOST}")
+    print(f"Flask Port: {FLASK_PORT}")
