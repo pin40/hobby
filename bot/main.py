@@ -17,30 +17,39 @@ logger = logging.getLogger(__name__)
 
 async def start(update, context):
     """Sends a welcome message when the /start command is issued."""
-    await update.message.reply_text('Hello! I am your multifunctional bot. How can I help you today?')
+    # This start function is now superseded by finance_handlers.start_command for /start
+    # It can be kept for other purposes or removed if /start is solely for finance menu.
+    # For now, let's assume /start is handled by finance_handlers.
+    await update.message.reply_text('Hello! This is a generic start. Use /menu for the finance assistant.')
 
 async def help_command(update, context):
     """Sends a comprehensive help message with all available commands."""
     help_text = (
-        "Welcome to your Multifunctional Bot!\n\n"
-        "Available commands:\n"
-        "/start - Welcome message\n"
-        "/help - Show this help message\n\n"
-        "Finance Management:\n"
-        "/add_income <amount> <description> - Add an income record\n"
-        "/add_expense <amount> <description> - Add an expense record\n"
-        "/balance - Show your current financial balance\n"
-        "/export_finances - Get an Excel sheet of your financial records\n\n"
-        "Personal Diary:\n"
-        "/add_entry <text> - Add a new diary entry\n"
-        "/view_entries [all|keyword] - View diary entries (latest, all, or by keyword)\n\n"
-        "Google Calendar:\n"
-        "/events [max_results] - View upcoming calendar events\n"
-        "/newevent <YYYY-MM-DD> <HH:MM> <Duration_Minutes> <Summary> - Add a new event\n\n"
-        "AI Assistant:\n"
-        "/chat <message> - Chat with the AI assistant\n"
+        "🤖 *Asistente Financiero FinBot - Ayuda*\n\n"
+        "Puedes controlar el bot usando los siguientes comandos y menús:\n\n"
+        "*/start o /menu*\n"
+        "  Inicia la conversación con el bot y muestra el menú principal de finanzas.\n"
+        "  Desde el menú podrás:\n"
+        "  ➕ Agregar Ingresos\n"
+        "  ➖ Agregar Gastos\n"
+        "  💰 Ver Saldo Actual\n"
+        "  📋 Ver Historial (próximamente)\n"
+        "  🤖 Usar el Asistente IA (próximamente)\n\n"
+        "*/export*\n"
+        "  Genera y envía un archivo Excel con tus registros financieros.\n\n"
+        "*/help*\n"
+        "  Muestra este mensaje de ayuda.\n\n"
+        "*Otros Módulos (si están activos):*\n\n"
+        "*Personal Diary:*\n"
+        "  `/add_entry <text>` - Agrega una nueva entrada al diario.\n"
+        "  `/view_entries [all|keyword]` - Visualiza entradas del diario.\n\n"
+        "*Google Calendar:*\n"
+        "  `/events [max_results]` - Visualiza próximos eventos del calendario.\n"
+        "  `/newevent <YYYY-MM-DD> <HH:MM> <Duración_Minutos> <Resumen>` - Agrega un nuevo evento.\n\n"
+        "*AI Assistant:*\n"
+        "  `/chat <message>` - Chatea con el asistente IA.\n"
     )
-    await update.message.reply_text(help_text)
+    await update.message.reply_text(help_text, parse_mode='Markdown')
 
 def main():
     """Run the bot."""
@@ -56,17 +65,18 @@ def main():
     logger.info("Initializing bot application...")
     application = Application.builder().token(settings.TELEGRAM_BOT_TOKEN).build()
 
-    # Register command handlers
-    application.add_handler(CommandHandler("start", start))
+    # Register general command handlers
+    # The original start command is now replaced by the one in finance_handlers for /start and /menu
+    # application.add_handler(CommandHandler("start", start)) # This is the generic start, now unused for /start
     application.add_handler(CommandHandler("help", help_command))
     
-    # Register finance handlers
-    application.add_handler(CommandHandler("add_income", finance_handlers.add_income))
-    application.add_handler(CommandHandler("add_expense", finance_handlers.add_expense))
-    application.add_handler(CommandHandler("balance", finance_handlers.balance))
-    application.add_handler(CommandHandler("export_finances", finance_handlers.export_finances))
+    # Register all finance handlers from finance_handlers.py
+    # This includes /start, /menu, ConversationHandlers, CallbackQueryHandlers for finance features
+    for handler in finance_handlers.finance_handlers:
+        application.add_handler(handler)
 
     # Add diary handlers
+    # These CommandHandlers should be fine as they are self-contained.
     application.add_handler(CommandHandler("add_entry", diary_handlers.add_entry))
     application.add_handler(CommandHandler("view_entries", diary_handlers.view_entries))
 

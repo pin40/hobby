@@ -4,6 +4,8 @@ pandas
 openpyxl
 google-api-python-client
 oauth2client
+gspread
+google-auth
 Flask
 python-dotenv
 requests
